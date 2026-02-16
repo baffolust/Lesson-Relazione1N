@@ -56,3 +56,8 @@ __Lanciare le migrazioni__
 Crea le tabelle nel DB. Non necessario se utilizziamo il medesimo DB
 
 php artisan migrate
+
+-------------------------------------------------------------------------------------------
+
+__NOTE__
+La clonazione non copia i file in public e storage => Clonando un progetto si perdono i link ai media e i media

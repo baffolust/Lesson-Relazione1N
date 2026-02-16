@@ -1,0 +1,85 @@
+## FORTIFY ##
+
+- E' una libreria first party di Laravel (sviluppata dirattamente dai progettisti di Laravel)
+- Serve per gestire l'autenticazione:
+        - registrazione e accessi al sito
+
+- https://laravel.com/docs/12.x/fortify#main-content
+
+- Installazione delle dipendenze di php
+
+        composer require laravel/fortify
+
+        - Installa la cartella fortify all'interno di vendor/laravel
+
+- Rendere disponibili file di confiurazione e logiche di fortify (presenti e non modificabili nella cartella vendor), per poterle successivamente sovrascrivere
+
+        php artisan fortify:install
+
+        - Installa le classi Actions di Fortify
+        - Installa le classi Providers di Fortify
+        - Aggiunge il file fortify.php alla cartella config
+        - Installa la migrazione add_two_factor_column_to_users_table
+
+
+- Lanciare la migrazione installata con il comando precedente
+
+        php artisan migrate
+
+        - aggiunge le nuove colonne alla tabella users
+
+
+**REGISTRAZIONE**
+
+- Documentazione : https://laravel.com/docs/12.x/fortify#registration
+
+- All'interno della funzione boot() del provider FortifyServiceProvider, copiare
+
+        Fortify::registerView(function () {
+        return view('auth.register');
+        });
+
+La funzione si aspetta di trovare una vista "register" all'interno della cartella "auth"
+
+- Quando nella cartella fortify sono presenti delle rotte che non sono accessibili. Per visionare tutte le rotte si utilizza il comando 
+
+        php artisan route:list
+
+Si visualizzano tutte le rotte presenti nel progetto, incluso quelle create, quelle preconfigurate da laravel e quelle installate con fortify. Ne esistono due
+
+GET|HEAD  register ........................ register › Laravel\Fortify › RegisteredUserController@create
+POST      register ........................ register.store › Laravel\Fortify › RegisteredUserController@store
+
+        - Si utilizza la rotta register (GET) per accedere alla vista per la registrazione
+        - Si utilizza la rotta register (POST) per la action sul form con metodo POST
+
+- La request del Register si aspetta 4 valori in input dal form
+
+        - "name" di tipo string 
+        - "email address / username" di tipo string 
+        - "password" 
+        - "password_confirmation" fields
+
+- Dopo aver fatto la registrazione, fortify fa redirect a "/home", per cambiare questa impostazione si fa da config/fortify.php
+
+- Registrandosi, si effettua automaticamente login ed apre una sessione, pertanto se provo ad accedere alla pagina di registrazione, vengo ridirezionato alla pagina di home. Per poter riaccedere alla pagina devo fare logout
+
+- Di default Fortify chiede password lunga 8 caratteri
+
+**LOGOUT**
+
+Tra le rotte disponibili c'è 
+
+ POST      logout .......................... logout › Laravel\Fortify › AuthenticatedSessionController@destroy
+
+- Logout è una rotta di tipo POST, se lo associo ad un anchor <a> non può funzionare perché gli anchor ammettono solo il tipo GET. Va modificato il tipo di tag in un <form>
+
+**LOGIN**
+
+- Documentazione : https://laravel.com/docs/12.x/fortify#authentication
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+
+## MIDDLEWARE ##
+
